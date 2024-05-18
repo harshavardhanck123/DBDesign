@@ -1,0 +1,286 @@
+Database Schema for Guvi Zen Class
+
+1) Entities:
+
+1. Students:
+   - student_id (Primary Key)
+   - name
+   - email
+   - phone_number
+
+2. Instructors:
+   - instructor_id (Primary Key)
+   - name
+   - email
+   - phone_number
+
+3. Courses:
+   - course_id (Primary Key)
+   - title
+   - description
+   - instructor_id (Foreign Key)
+
+4. Class Sessions:
+   - session_id (Primary Key)
+   - course_id (Foreign Key)
+   - date
+   - time
+   - duration
+
+5. Assignments:
+   - assignment_id (Primary Key)
+   - course_id (Foreign Key)
+   - title
+   - description
+   - due_date
+
+6. Grades:
+   - grade_id (Primary Key)
+   - student_id (Foreign Key)
+   - assignment_id (Foreign Key)
+   - grade
+
+7. Attendance:
+   - attendance_id (Primary Key)
+   - session_id (Foreign Key)
+   - student_id (Foreign Key)
+   - status
+
+8. CodeKata:
+   - kata_id (Primary Key)
+   - title
+   - description
+   - difficulty_level
+
+9. Topics:
+   - topic_id (Primary Key)
+   - course_id (Foreign Key)
+   - title
+   - description
+
+10. Tasks:
+    - task_id (Primary Key)
+    - course_id (Foreign Key)
+    - title
+    - description
+    - due_date
+
+11. Company Drives:
+    - drive_id (Primary Key)
+    - company_name
+    - date
+    - time
+    - location
+    - eligibility_criteria
+
+2) Relationships:
+
+- One-to-Many relationship between Instructors and Courses
+- One-to-Many relationship between Courses and Class Sessions
+- One-to-Many relationship between Courses and Assignments
+- One-to-Many relationship between Students and Grades
+- Many-to-One relationship between Assignments and Grades
+- Many-to-Many relationship between Students and Class Sessions through Attendance
+- Many-to-Many relationship between CodeKata and Courses
+- One-to-Many relationship between Courses and Topics
+- One-to-Many relationship between Courses and Tasks
+- One-to-Many relationship between Courses and Company Drives
+
+
+3) DataBase Schema
+3.1 Instructors Table
+This table stores information about the instructors.
+
+CREATE TABLE Instructors (
+    instructor_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone_number VARCHAR(20)
+);
+
+3.2 Students Table
+This table stores information about the students.
+
+CREATE TABLE Students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone_number VARCHAR(20)
+);
+
+3.3 Courses Table
+This table stores information about the courses offered, each linked to an instructor.
+
+CREATE TABLE Courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
+    description TEXT,
+    instructor_id INT,
+    FOREIGN KEY (instructor_id) REFERENCES Instructors(instructor_id)
+);
+
+3.4 Class Sessions Table
+This table stores information about class sessions for each course.
+
+CREATE TABLE Class_Sessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT,
+    date DATE,
+    time TIME,
+    duration INT,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+);
+
+3.5 Assignments Table
+This table stores information about assignments for each course.
+
+CREATE TABLE Assignments (
+    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT,
+    title VARCHAR(100),
+    description TEXT,
+    due_date DATE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+);
+
+3.6 Grades Table
+This table stores information about grades for each student’s assignments.
+
+CREATE TABLE Grades (
+    grade_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    assignment_id INT,
+    grade FLOAT,
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (assignment_id) REFERENCES Assignments(assignment_id)
+);
+
+3.7 Attendance Table
+This table stores information about student attendance for each class session.
+
+CREATE TABLE Attendance (
+    attendance_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT,
+    student_id INT,
+    status VARCHAR(10),
+    FOREIGN KEY (session_id) REFERENCES Class_Sessions(session_id),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id)
+);
+
+3.8 CodeKata Table
+This table stores information about CodeKata exercises.
+
+CREATE TABLE CodeKata (
+    kata_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
+    description TEXT,
+    difficulty_level VARCHAR(20)
+);
+
+3.9 Topics Table
+This table stores information about topics covered in each course.
+
+CREATE TABLE Topics (
+    topic_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT,
+    title VARCHAR(100),
+    description TEXT,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+);
+
+3.10 Tasks Table
+This table stores information about tasks assigned in each course.
+
+CREATE TABLE Tasks (
+    task_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT,
+    title VARCHAR(100),
+    description TEXT,
+    due_date DATE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+);
+
+3.11 Company Drives Table
+This table stores information about company drives for student placements.
+
+CREATE TABLE Company_Drives (
+    drive_id INT AUTO_INCREMENT PRIMARY KEY,
+    company_name VARCHAR(100),
+    date DATE,
+    time TIME,
+    location VARCHAR(100),
+    eligibility_criteria TEXT
+);
+
+4. Inserting Dummy Values
+
+4.1 Inserting Dummy Values into Instructors Table
+
+INSERT INTO Instructors (name, email, phone_number) VALUES
+('John Doe', 'john@example.com', '123-456-7890'),
+('Jane Smith', 'jane@example.com', '987-654-3210');
+
+4.2 Inserting Dummy Values into Students Table
+
+INSERT INTO Students (name, email, phone_number) VALUES
+('Alice Johnson', 'alice@example.com', '111-222-3333'),
+('Bob Smith', 'bob@example.com', '444-555-6666');
+
+4.3 Inserting Dummy Values into Courses Table
+
+INSERT INTO Courses (title, description, instructor_id) VALUES
+('Introduction to Programming', 'Learn the basics of programming', 1),
+('Web Development', 'Build websites using HTML, CSS, and JavaScript', 2);
+
+4.4 Inserting Dummy Values into Class Sessions Table
+
+INSERT INTO Class_Sessions (course_id, date, time, duration) VALUES
+(1, '2024-05-20', '10:00:00', 90),
+(2, '2024-05-22', '14:00:00', 120);
+
+4.5 Inserting Dummy Values into Assignments Table
+
+INSERT INTO Assignments (course_id, title, description, due_date) VALUES
+(1, 'Assignment 1', 'Complete programming exercises', '2024-05-25'),
+(2, 'Project 1', 'Develop a basic website', '2024-05-30');
+
+4.6 Inserting Dummy Values into Grades Table
+
+INSERT INTO Grades (student_id, assignment_id, grade) VALUES
+(1, 1, 85),
+(2, 2, 90);
+
+4.7 Inserting Dummy Values into Attendance Table
+
+INSERT INTO Attendance (session_id, student_id, status) VALUES
+(1, 1, 'Present'),
+(1, 2, 'Absent'),
+(2, 1, 'Present'),
+(2, 2, 'Present');
+
+4.8 Inserting Dummy Values into CodeKata Table
+
+INSERT INTO CodeKata (title, description, difficulty_level) VALUES
+('Kata 1', 'Lorem ipsum dolor sit amet', 'Easy'),
+('Kata 2', 'Consectetur adipiscing elit', 'Medium');
+
+4.9 Inserting Dummy Values into Topics Table
+
+INSERT INTO Topics (course_id, title, description) VALUES
+(1, 'Variables and Data Types', 'Introduction to variables and data types'),
+(1, 'Control Flow', 'Learn about if statements and loops');
+
+4.10 Inserting Dummy Values into Tasks Table
+
+INSERT INTO Tasks (course_id, title, description, due_date) VALUES
+(2, 'Task 1', 'Complete HTML exercises', '2024-05-25'),
+(2, 'Task 2', 'Style website with CSS', '2024-06-01');
+
+4.11 Inserting Dummy Values into Company Drives Table
+
+INSERT INTO Company_Drives (company_name, date, time, location, eligibility_criteria) VALUES
+('XYZ Corp', '2024-06-15', '09:00:00', 'Virtual', 'Open to all students'),
+('ABC Inc', '2024-07-01', '10:00:00', 'Onsite', 'Final year students only');
+
+
+
